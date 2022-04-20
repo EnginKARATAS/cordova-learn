@@ -21,25 +21,7 @@
 // See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener("deviceready", onDeviceReady, false);
 
-function onDeviceReady() {
-  // Cordova is now initialized. Have fun!
-
-  let doc = window.document;
-  let pouch_cordova_element = (doc.createElement("h4").innerText =
-    "Cordova 🖤 Mobil Programlama!");
-  doc.getElementById("pouch_cordova_title").append(pouch_cordova_element);
-
-  var db = new PouchDB("userapp", { adapter: "cordova-sqlite" });
-
-  doc = {
-    _id: "Bozok",
-    title: "Bozok Universitesi",
-    lecture: "Cordova 🖤 Mobil Programlama Dersi!",
-    teacher: "Tolga Hayıt",
-    date: "18.04.2021",
-    version: "Version 1.0.0",
-  };
-
+function cordovaPouchDbInsert(db, doc) {
   db.put(doc)
     .then((res) => {
       console.log("Document inserted OK");
@@ -48,23 +30,31 @@ function onDeviceReady() {
     .catch((err) => {
       console.error(err);
     });
+}
 
-  db.get("Bozok")
+function cordovaPouchDbSelect(db, desiredDoc) {
+  db.get(desiredDoc)
     .then(function (doc) {
       console.log("🚀 ~ file: index.js ~ line 54 ~ doc", doc);
       let docum = window.document;
-      let title = (docum.createElement("h4").innerText = doc.title);
-      let lecture = (docum.createElement("h4").innerText = doc.lecture);
-      let teacher = (docum.createElement("h4").innerText = doc.teacher);
-      let date = (docum.createElement("h4").innerText = doc.date);
-      let version = (docum.createElement("h4").innerText = doc.version);
+      let title = (docum.createElement("h4").innerText = doc.title
+        ? doc.title
+        : "");
+      let lecture = (docum.createElement("h4").innerText = doc.lecture
+        ? doc.lecture
+        : "");
+      let teacher = (docum.createElement("h4").innerText = doc.teacher
+        ? doc.teacher
+        : "");
+      let date = (docum.createElement("h4").innerText = doc.date
+        ? doc.date
+        : "");
+      let version = (docum.createElement("h4").innerText = doc.version
+        ? doc.version
+        : "");
       let element_arr = [title, lecture, teacher, date, version];
 
       element_arr.forEach((item) => {
-        console.log(
-          "🚀 ~ file: index.js ~ line 63 ~ element_arr.forEach ~ item",
-          item
-        );
         let pouch_cordova_ul = document.getElementById("pouch_cordova_ul");
         let li = document.createElement("li");
         let txt = document.createTextNode(item);
@@ -75,6 +65,31 @@ function onDeviceReady() {
     .catch(function (err) {
       console.log(err);
     });
+}
+
+function onDeviceReady() {
+  // Cordova is now initialized. Have fun!
+
+  let document = window.document;
+  let pouch_cordova_title = (document.createElement("h4"));
+  let textNode = document.createTextNode("Cordova 🖤 Mobil Programlama!");
+  pouch_cordova_title.appendChild(textNode);
+    
+  document.getElementById("pouch_cordova_title").append(pouch_cordova_title);
+
+  var db = new PouchDB("userapp", { adapter: "cordova-sqlite" });
+
+   doc = {
+    _id: "Bozok",
+    title: "Bozok Universitesiiii",
+    lecture: "Cordova 🖤 Mobil Programlama Dersi!",
+    teacher: "Tolga Hayıt",
+    date: "18.04.2021222",
+    version: "Version 1.0.0",
+  };
+
+  cordovaPouchDbInsert(db, doc);
+  cordovaPouchDbSelect(db, "Bozok");
 
   console.log("Running cordova-" + cordova.platformId + "@" + cordova.version);
   document.getElementById("deviceready").classList.add("ready");
